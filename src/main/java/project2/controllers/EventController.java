@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import project2.data.EventData;
 import project2.models.Event;
+import project2.models.EventType;
 
 
 @Controller
@@ -24,6 +25,7 @@ public class EventController {
     public String displayCreateEventForm(Model model) {
         model.addAttribute("title", "Create Events");
         model.addAttribute(new Event());
+        model.addAttribute("types", EventType.values());
         return "events/create";
     }
 
