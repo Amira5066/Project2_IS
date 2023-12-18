@@ -1,5 +1,6 @@
 package project2.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -7,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import project2.data.EventData;
+import project2.data.EventRepository;
 import project2.models.Event;
 import project2.models.EventType;
 
@@ -14,9 +16,12 @@ import project2.models.EventType;
 @Controller
 @RequestMapping("events")
 public class EventController {
+    @Autowired
+    private EventRepository eventRepository;
+
     @GetMapping
     public String displayAllEvents(Model model) {
-        model.addAttribute("events", EventData.getAll());
+        model.addAttribute("events", eventRepository.findAll());
         model.addAttribute("title", "All Events");
         return "events/index";
     }
@@ -35,14 +40,14 @@ public class EventController {
             model.addAttribute("title", "Create Event");
             return "events/create";
         }
-        EventData.add(newEvent);
+        eventRepository.save(newEvent);
         return "redirect:/events/create";
     }
 
     @GetMapping("delete")
     public String displayDeleteEventForm(Model model) {
         model.addAttribute("title", "Delete Events");
-        model.addAttribute("events", EventData.getAll());
+        model.addAttribute("events", eventRepository.findAll());
         return "events/delete";
     }
 
@@ -50,7 +55,7 @@ public class EventController {
     public String processDeleteEventsForm(@RequestParam(required = false) int[] eventIds) {
         if (eventIds == null) return "redirect:/events/delete";
         for (int id : eventIds) {
-            EventData.remove(id);
+            eventRepository.deleteById(id);
         }
         return "redirect:/events/delete";
     }
