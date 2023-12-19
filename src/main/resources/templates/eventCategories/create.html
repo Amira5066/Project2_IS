@@ -5,7 +5,7 @@
 <body class="container">
 <header th:replace="fragments :: header"></header>
 
-<form method="post" action="/events/createCategory">
+<form method="post" action="/eventCategory/create">
     <div class="form-group">
         <label>Name
             <input th:field="${eventCategory.name}" class="form-control">

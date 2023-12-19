@@ -42,26 +42,12 @@ public class EventController {
         return "events/index";
     }
 
-    @GetMapping("allCategories")
-    public String displayAllCategories(Model model) {
-        model.addAttribute("eventCategories", eventCategoryRepository.findAll());
-        model.addAttribute("title", "All Categories");
-        return "eventCategories/index";
-    }
-
     @GetMapping("create")
     public String displayCreateEventForm(Model model) {
         model.addAttribute("title", "Create Events");
         model.addAttribute(new Event());
         model.addAttribute("categories", eventCategoryRepository.findAll());
         return "events/create";
-    }
-
-    @GetMapping("createCategory")
-    public String displayCreateEventCategoryForm(Model model) {
-        model.addAttribute("title", "Create Event Category");
-        model.addAttribute(new EventCategory());
-        return "eventCategories/create";
     }
 
     @PostMapping("create")
@@ -72,16 +58,6 @@ public class EventController {
         }
         eventRepository.save(newEvent);
         return "redirect:/events/create";
-    }
-
-    @PostMapping("createCategory")
-    public String processCreateEventCategoryForm(@Validated @ModelAttribute EventCategory newEventCategory, Errors errors, Model model) {
-        if (errors.hasErrors()) {
-            model.addAttribute("title", "Create Event Category");
-            return "eventCategories/create";
-        }
-        eventCategoryRepository.save(newEventCategory);
-        return "redirect:/events/createCategory";
     }
 
     @GetMapping("delete")
