@@ -11,6 +11,8 @@ import project2.data.EventRepository;
 import project2.models.Event;
 import project2.models.EventCategory;
 
+import java.util.Optional;
+
 
 @Controller
 @RequestMapping("events")
@@ -22,9 +24,21 @@ public class EventController {
     private EventCategoryRepository eventCategoryRepository;
 
     @GetMapping
-    public String displayAllEvents(Model model) {
-        model.addAttribute("events", eventRepository.findAll());
-        model.addAttribute("title", "All Events");
+    public String displayAllEvents(@RequestParam(required = false) Integer categoryId,  Model model) {
+        if (categoryId == null) {
+            model.addAttribute("events", eventRepository.findAll());
+            model.addAttribute("title", "All Events");
+        } else {
+            Optional<EventCategory> result = eventCategoryRepository.findById(categoryId);
+            if (result.isEmpty()) {
+                model.addAttribute("title", "Invalid Category ID: " + categoryId);
+            } else {
+                EventCategory category = result.get();
+                model.addAttribute("title", "Events in category: " + category.getName());
+                model.addAttribute("events", category.getEvents());
+            }
+        }
+
         return "events/index";
     }
 
