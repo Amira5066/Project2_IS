@@ -5,21 +5,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import project2.data.EventCategoryRepository;
-import project2.data.EventRepository;
-import project2.models.Event;
 import project2.models.EventCategory;
-
-import java.util.Optional;
 
 
 @Controller
 @RequestMapping("eventCategory")
 public class EventCategoryController {
-    @Autowired
-    private EventRepository eventRepository;
-
     @Autowired
     private EventCategoryRepository eventCategoryRepository;
 
@@ -44,13 +40,6 @@ public class EventCategoryController {
             return "eventCategories/create";
         }
         eventCategoryRepository.save(newEventCategory);
-        return "redirect:/events/createCategory";
-    }
-
-    @GetMapping("delete")
-    public String displayDeleteEventForm(Model model) {
-        model.addAttribute("title", "Delete Event Category");
-        model.addAttribute("events", eventCategoryRepository.findAll());
-        return "eventCategories/delete";
+        return "redirect:/eventCategories/create";
     }
 }
