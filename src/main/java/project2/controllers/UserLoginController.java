@@ -32,12 +32,15 @@ public class UserLoginController {
             model.addAttribute("error", "Username and password are required.");
             return "sign_in";
         }
+        if (userRepository.findByUsername(username).isPresent()) {
+            model.addAttribute("error", "Username already exists.");
+            return "sign_in";
+        }
+
         User user = new User();
         user.setUsername(username);
         user.encodeAndSetPassword(password);
-//        if (userRepository.findAll(user))
         userRepository.save(user);
-        return "sign_in";
-//        return "redirect:/events";
+        return "redirect:/login";
     }
 }

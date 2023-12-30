@@ -5,7 +5,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class User extends AbstractEntity{
         return username;
     }
 
+
     public String getPassword() {
         return password;
     }
@@ -28,8 +31,8 @@ public class User extends AbstractEntity{
     }
 
     public void encodeAndSetPassword(String password) {
-        String salt = BCrypt.gensalt();
-        this.password = BCrypt.hashpw(password, salt);
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        this.password = encoder.encode(password);
     }
 
     public void setPassword(String password) {
