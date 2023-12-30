@@ -10,7 +10,6 @@
         <input type="hidden" th:field="${eventTag.event}">
         <select th:field="${eventTag.tag}">
             <option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}">
-
             </option>
         </select>
     </div>

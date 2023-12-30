@@ -17,10 +17,12 @@ public class User extends AbstractEntity{
     private String username;
     private String password;
 
+    @ManyToOne()
+    private Role role;
+
     public String getUsername() {
         return username;
     }
-
 
     public String getPassword() {
         return password;
@@ -33,6 +35,14 @@ public class User extends AbstractEntity{
     public void encodeAndSetPassword(String password) {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         this.password = encoder.encode(password);
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public void setPassword(String password) {

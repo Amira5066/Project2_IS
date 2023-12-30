@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import project2.models.Role;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +23,7 @@ public class WebSecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home", "/sign_in", "/login").permitAll()
-                        .requestMatchers("/events/delete").hasRole("USER")
+                        .requestMatchers("/users", "/users/create", "/users/delete", "/users/edit").hasRole(Role.ADMIN)
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
