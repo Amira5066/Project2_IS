@@ -95,60 +95,20 @@ public class UserController {
         return "redirect:/users";
     }
 
-//    @GetMapping("delete")
-//    public String displayDeleteEventForm(Model model) {
-//        model.addAttribute("title", "Delete Events");
-//        model.addAttribute("events", eventRepository.findAll());
-//        return "events/delete";
-//    }
-//
-//    @PostMapping("delete")
-//    public String processDeleteEventsForm(@RequestParam(required = false) int[] eventIds) {
-//        if (eventIds == null) return "redirect:/events/delete";
-//        for (int id : eventIds) {
-//            eventRepository.deleteById(id);
-//        }
-//        return "redirect:/events/delete";
-//    }
-//
-//    @GetMapping("detail")
-//    public String displayEventDetails(@RequestParam(required = true) Integer eventId, Model model) {
-//        Optional<Event> result = eventRepository.findById(eventId);
-//
-//        if (result.isEmpty()) {
-//            model.addAttribute("title", "Invalid Event ID: " + eventId);
-//        } else {
-//            Event event = result.get();
-//            model.addAttribute("title", event.getName()+ " Details");
-//            model.addAttribute("event", event);
-//            model.addAttribute("tags", event.getTags());
-//        }
-//        return "/events/detail";
-//    }
-//
-//    @GetMapping("add-tag")
-//    public String displayAddTagFrom(@RequestParam Integer eventId, Model model) {
-//        Optional<Event> result = eventRepository.findById(eventId);
-//        Event event = result.get();
-//        model.addAttribute("title", "Add Tag to " + event.getName());
-//        model.addAttribute("tags", tagRepository.findAll());
-//        EventTagDTO eventTag = new EventTagDTO();
-//        eventTag.setEvent(event);
-//        model.addAttribute("eventTag", eventTag);
-//        return "/events/add-tag";
-//    }
-//
-//    @PostMapping("add-tag")
-//    public String processAddTagFrom(@ModelAttribute @Validated EventTagDTO eventTag, Model model, Errors errors) {
-//        if (!errors.hasErrors()) {
-//            Event event = eventTag.getEvent();
-//            Tag tag = eventTag.getTag();
-//            if (!event.getTags().contains(tag)) {
-//                event.addTag(tag);
-//                eventRepository.save(event);
-//            }
-//            return "redirect:detail?eventId=" + event.getId();
-//        }
-//        return "redirect:/events/add-tag";
-//    }
+    @GetMapping("delete")
+    public String displayDeleteEventForm(Model model) {
+        model.addAttribute("title", "Delete Users");
+        Optional<Role> role = roleRepository.findByRole(Role.USER);
+        model.addAttribute("users", userRepository.findAllByRole(role.get()));
+        return "users/delete";
+    }
+
+    @PostMapping("delete")
+    public String processDeleteEventsForm(@RequestParam(required = false) int[] userIds) {
+        if (userIds == null) return "redirect:/users/delete";
+        for (int id : userIds) {
+            userRepository.deleteById(id);
+        }
+        return "redirect:/users/delete";
+    }
 }
