@@ -6,13 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import project2.data.EventCategoryRepository;
-import project2.data.EventRepository;
-import project2.data.TagRepository;
 import project2.models.Event;
 import project2.models.EventCategory;
 import project2.models.Tag;
 import project2.models.dto.EventTagDTO;
+import project2.service.EventCategoryService;
+import project2.service.EventService;
+import project2.service.TagService;
 
 import java.util.Optional;
 
@@ -20,22 +20,24 @@ import java.util.Optional;
 @Controller
 @RequestMapping("events")
 public class EventController {
-    @Autowired
-    private EventRepository eventRepository;
 
+    private EventCategoryService eventCategoryService;
+    private EventService eventService;
+    private TagService tagService;
     @Autowired
-    private EventCategoryRepository eventCategoryRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
+    public EventController(EventCategoryService eventCategoryService, EventService eventService, TagService tagService) {
+        this.eventCategoryService = eventCategoryService;
+        this.eventService = eventService;
+        this.tagService = tagService;
+    }
 
     @GetMapping
     public String displayAllEvents(@RequestParam(required = false) Integer categoryId,  Model model) {
         if (categoryId == null) {
-            model.addAttribute("events", eventRepository.findAll());
+            model.addAttribute("events", eventService.findAll());
             model.addAttribute("title", "All Events");
         } else {
-            Optional<EventCategory> result = eventCategoryRepository.findById(categoryId);
+            Optional<EventCategory> result = eventCategoryService.findById(categoryId);
             if (result.isEmpty()) {
                 model.addAttribute("title", "Invalid Category ID: " + categoryId);
             } else {
@@ -52,7 +54,7 @@ public class EventController {
     public String displayCreateEventForm(Model model) {
         model.addAttribute("title", "Create Events");
         model.addAttribute(new Event());
-        model.addAttribute("categories", eventCategoryRepository.findAll());
+        model.addAttribute("categories", eventCategoryService.findAll());
         return "events/create";
     }
 
@@ -62,14 +64,14 @@ public class EventController {
             model.addAttribute("title", "Create Event");
             return "events/create";
         }
-        eventRepository.save(newEvent);
+        eventService.save(newEvent);
         return "redirect:/events/create";
     }
 
     @GetMapping("delete")
     public String displayDeleteEventForm(Model model) {
         model.addAttribute("title", "Delete Events");
-        model.addAttribute("events", eventRepository.findAll());
+        model.addAttribute("events", eventService.findAll());
         return "events/delete";
     }
 
@@ -77,14 +79,14 @@ public class EventController {
     public String processDeleteEventsForm(@RequestParam(required = false) int[] eventIds) {
         if (eventIds == null) return "redirect:/events/delete";
         for (int id : eventIds) {
-            eventRepository.deleteById(id);
+            eventService.deleteById(id);
         }
         return "redirect:/events/delete";
     }
 
     @GetMapping("detail")
     public String displayEventDetails(@RequestParam(required = true) Integer eventId, Model model) {
-        Optional<Event> result = eventRepository.findById(eventId);
+        Optional<Event> result = eventService.findById(eventId);
 
         if (result.isEmpty()) {
             model.addAttribute("title", "Invalid Event ID: " + eventId);
@@ -99,10 +101,10 @@ public class EventController {
 
     @GetMapping("add-tag")
     public String displayAddTagFrom(@RequestParam Integer eventId, Model model) {
-        Optional<Event> result = eventRepository.findById(eventId);
+        Optional<Event> result = eventService.findById(eventId);
         Event event = result.get();
         model.addAttribute("title", "Add Tag to " + event.getName());
-        model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute("tags", tagService.findAll());
         EventTagDTO eventTag = new EventTagDTO();
         eventTag.setEvent(event);
         model.addAttribute("eventTag", eventTag);
@@ -116,7 +118,7 @@ public class EventController {
             Tag tag = eventTag.getTag();
             if (!event.getTags().contains(tag)) {
                 event.addTag(tag);
-                eventRepository.save(event);
+                eventService.save(event);
             }
             return "redirect:detail?eventId=" + event.getId();
         }
