@@ -9,19 +9,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import project2.data.EventCategoryRepository;
+import project2.repository.EventCategoryRepository;
 import project2.models.EventCategory;
+import project2.service.EventCategoryService;
+import project2.service.EventCategoryServiceImpl;
 
 
 @Controller
 @RequestMapping("eventCategory")
 public class EventCategoryController {
+    private EventCategoryService eventCategoryService;
     @Autowired
-    private EventCategoryRepository eventCategoryRepository;
+    public EventCategoryController(EventCategoryService eventCategoryService) {
+        this.eventCategoryService = eventCategoryService;
+    }
 
     @GetMapping
     public String displayAllCategories(Model model) {
-        model.addAttribute("eventCategories", eventCategoryRepository.findAll());
+        model.addAttribute("eventCategories", eventCategoryService.findAll());
         model.addAttribute("title", "All Categories");
         return "eventCategories/index";
     }
@@ -39,7 +44,7 @@ public class EventCategoryController {
             model.addAttribute("title", "Create Event Category");
             return "eventCategories/create";
         }
-        eventCategoryRepository.save(newEventCategory);
+        eventCategoryService.save(newEventCategory);
         return "redirect:/eventCategories/create";
     }
 }

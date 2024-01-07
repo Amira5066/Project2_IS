@@ -1,4 +1,4 @@
-package project2.data;
+package project2.repository;
 
 import project2.models.Tag;
 import org.springframework.data.repository.CrudRepository;
