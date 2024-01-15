@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @PostMapping("create")
-    public String processCreateEventForm(@Validated @ModelAttribute User newUser, Errors errors, Model model) {
+    public String processCreateUserForm(@Validated @ModelAttribute User newUser, Errors errors, Model model) {
         if (errors.hasErrors()) {
             model.addAttribute("title", "Create User");
             return "users/create";
@@ -90,7 +90,7 @@ public class UserController {
     }
 
     @GetMapping("delete")
-    public String displayDeleteEventForm(Model model) {
+    public String displayDeleteUsersForm(Model model) {
         model.addAttribute("title", "Delete Users");
         Optional<Role> role = roleService.findByRole(Role.USER);
         model.addAttribute("users", userService.findAllByRole(role.get()));
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @PostMapping("delete")
-    public String processDeleteEventsForm(@RequestParam(required = false) int[] userIds) {
+    public String processDeleteUsersForm(@RequestParam(required = false) int[] userIds) {
         if (userIds == null) return "redirect:/users/delete";
         for (int id : userIds) {
             userService.deleteById(id);
